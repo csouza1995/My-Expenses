@@ -28,11 +28,11 @@ class LoginForm extends Model
     {
         return [
             // email and password are both required
-            [['email', 'password'], 'required'],
+            [['email', 'password'], 'required', 'message' => 'O campo {attribute} é obrigatório.'],
             // rememberMe must be a boolean value
-            ['rememberMe', 'boolean'],
+            ['rememberMe', 'boolean', 'message' => 'O valor deve ser verdadeiro ou falso.'],
             // password is validated by validatePassword()
-            ['password', 'validatePassword'],
+            ['password', 'validatePassword', 'message' => 'Senha ou e-mail incorretos.']
         ];
     }
 

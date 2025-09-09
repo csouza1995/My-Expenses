@@ -7,6 +7,8 @@ use yii\db\ActiveRecord;
 
 class User extends ActiveRecord implements \yii\web\IdentityInterface
 {
+    use Traits\UseTimestamps;
+
     public static function tableName()
     {
         return 'users';
@@ -112,19 +114,5 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
     public function generateAccessToken()
     {
         $this->access_token = Yii::$app->getSecurity()->generateRandomString() . '-' . time();
-    }
-
-    /**
-     * Sets created_at and updated_at timestamps
-     */
-    public function setTimestamps()
-    {
-        $time = time();
-
-        if ($this->isNewRecord) {
-            $this->created_at = $time;
-        }
-
-        $this->updated_at = $time;
     }
 }

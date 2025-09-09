@@ -28,9 +28,9 @@ class SignUpForm extends Model
     {
         return [
             // email and password are both required
-            [['name', 'email', 'password'], 'required'],
+            [['name', 'email', 'password'], 'required', 'message' => 'O campo {attribute} é obrigatório.'],
             // email has to be a valid email address
-            ['email', 'email'],
+            ['email', 'email', 'message' => 'Por favor, insira um endereço de e-mail válido.'],
             // email must be unique
             ['email', 'unique', 'targetClass' => User::class, 'message' => 'Este endereço de e-mail já está em uso.'],
             // password minimum length

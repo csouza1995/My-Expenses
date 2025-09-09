@@ -84,7 +84,6 @@ class SiteController extends Controller
             $user->setPassword($model->password);
             $user->generateAuthKey();
             $user->generateAccessToken();
-            $user->setTimestamps();
 
             if ($user->save()) {
                 return $this->goBack();
