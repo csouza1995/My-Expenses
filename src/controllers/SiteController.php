@@ -7,8 +7,9 @@ use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\filters\VerbFilter;
-use app\models\LoginForm;
-use app\models\ContactForm;
+use app\models\Forms\LoginForm;
+use app\models\Forms\SignUpForm;
+use app\models\User;
 
 class SiteController extends Controller
 {
@@ -61,7 +62,40 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        return $this->render('dashboard');
+    }
+
+    /**
+     * Signup action.
+     */
+    public function actionSignup()
+    {
+        // If already logged in, redirect to home
+        if (!Yii::$app->user->isGuest) {
+            return $this->goHome();
+        }
+
+        $model = new SignUpForm();
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            // Sign up the user
+            $user = new User();
+            $user->name = $model->name;
+            $user->email = $model->email;
+            $user->setPassword($model->password);
+            $user->generateAuthKey();
+            $user->generateAccessToken();
+            $user->setTimestamps();
+
+            if ($user->save()) {
+                return $this->goBack();
+            }
+        }
+
+        $model->password = '';
+
+        return $this->render('signup', [
+            'model' => $model,
+        ]);
     }
 
     /**
@@ -71,6 +105,7 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
+        // If already logged in, redirect to home
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
@@ -96,24 +131,6 @@ class SiteController extends Controller
         Yii::$app->user->logout();
 
         return $this->goHome();
-    }
-
-    /**
-     * Displays contact page.
-     *
-     * @return Response|string
-     */
-    public function actionContact()
-    {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-            Yii::$app->session->setFlash('contactFormSubmitted');
-
-            return $this->refresh();
-        }
-        return $this->render('contact', [
-            'model' => $model,
-        ]);
     }
 
     /**
