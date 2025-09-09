@@ -21,7 +21,7 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
         '101' => [
             'id' => '101',
             'email' => 'demo@example.com',
-            'password_hash' => Yii::$app->>getSecurity()->generatePasswordHash('demo'),
+            'password_hash' => Yii::$app->getSecurity()->generatePasswordHash('demo'),
             'authKey' => 'test101key',
             'accessToken' => '101-token',
         ],
