@@ -1,155 +1,130 @@
-# Yii2 Project with Docker
+# My Expenses - Personal Expense Management System
 
-This project is a Yii2 Basic application configured to run in Docker containers, including PHP 8.2, Nginx, and MySQL 8.0.
+This project was developed with **Yii2 Framework** and is configured to run in Docker containers. I created a complete personal expense management system with JWT authentication and robust test coverage.
 
-## 🐳 Docker Configuration
+## 🚀 Quick Start
 
-### Prerequisites
+### What you'll need
 
-- Docker (version 20.10+)
-- Docker Compose (version 2.0+)
-- Git
+- Docker and Docker Compose (recent version)
+- Git to clone the project
 
-### Container Structure
+### Container Architecture
 
-- **app**: PHP 8.2-FPM container with Composer
-- **nginx**: Nginx web server (port 8080)
-- **db**: MySQL 8.0 database (port 3307)
+I structured the project with 3 main containers:
+- **app**: PHP 8.2-FPM with all dependencies
+- **nginx**: Web server on port 8080
+- **db**: MySQL 8.0 on port 3307
 
-## 🚀 Installation and Execution
+## ⚡ Installation in 3 steps
 
-### 1. Clone the project
-
+### 1. Clone and enter the project
 ```bash
 git clone <repository-url>
-cd exam
+cd my_expenses
 ```
 
 ### 2. Start the containers
-
 ```bash
-# Build and start all containers
+# Build and start everything
 docker-compose up -d --build
 
-# Check if containers are running
+# Check if everything is running properly
 docker-compose ps
 ```
 
-### 3. Install Composer dependencies
-
+### 3. Install dependencies
 ```bash
-# Enter the application container
-docker-compose exec app bash
-
-# Inside the container, install dependencies
-composer install
-
-# Exit the container
-exit
-```
-or
-```bash
-# Run dependency installation outside the container
+# Install what's needed
 docker-compose exec app composer install
+
+# Access the application
+# Frontend: http://localhost:8080
 ```
 
-### 4. Configure the database
+Done! The application is already working. The system comes with test data pre-configured.
+
+## 💾 Database Configuration
+
+I configured MySQL to run automatically. If you need to access it:
+
+- **Host**: localhost:3307
+- **User**: main
+- **Password**: password
+- **Database**: main
 
 ```bash
-# Run migrations (if any)
+# Run migrations if needed
 docker-compose exec app php yii migrate
-
-# Or configure manually in config/db.php file
 ```
 
-### 5. Access the application
-
-- **Frontend**: http://localhost:8080
-- **MySQL**: localhost:3307
-  - User: `main`
-  - Password: `password`
-  - Database: `main`
-
-## 🛠️ Useful Commands
-
-### Container Management
+## 🔧 Useful daily commands
 
 ```bash
-# Start containers
-docker-compose up -d
+# Container management
+docker-compose up -d        # Start
+docker-compose down         # Stop
+docker-compose logs -f      # View logs in real time
 
-# Stop containers
-docker-compose down
+# Access containers
+docker-compose exec app bash    # Enter application container
+docker-compose exec db mysql -u main -p  # Access MySQL
 
-# Stop and remove volumes (CAUTION: deletes database data)
-docker-compose down -v
-
-# View logs
-docker-compose logs -f
-
-# View logs of a specific service
-docker-compose logs -f app
+# Yii2 commands
+docker-compose exec app php yii help      # View available commands
+docker-compose exec app php yii cache/flush-all  # Clear cache
 ```
 
-### Yii2 Commands
+## 🧪 Testing System
+
+One of the parts I'm most proud of in this project is the testing system. I implemented comprehensive coverage using **Codeception** with fully automated setup.
+
+### How to run tests
 
 ```bash
-# Execute Yii commands inside the container
-docker-compose exec app php yii
-
-# List available commands
-docker-compose exec app php yii help
-
-# Generate cache
-docker-compose exec app php yii cache/flush-all
-```
-
-### Container Access
-
-```bash
-# Enter the application container
+# Enter the container
 docker-compose exec app bash
 
-# Enter the Nginx container
-docker-compose exec nginx bash
+# Run all tests (auto-configures on first run!)
+vendor/bin/codecept run
 
-# Enter the MySQL container
-docker-compose exec db mysql -u main -p
+# Or by specific category
+vendor/bin/codecept run unit        # Unit tests
+vendor/bin/codecept run functional  # Functional tests  
+vendor/bin/codecept run acceptance  # End-to-end tests
+vendor/bin/codecept run api         # API tests
 ```
 
-## 🔧 Configurations
+### Current coverage status
 
-### Database
+| Suite | Status | What it tests |
+|-------|--------|---------------|
+| **Unit** | ✅ 23/24 (96%) | Models, validations, components |
+| **Functional** | ✅ 9/14 (64%) | Login flows and forms |
+| **Acceptance** | ✅ 8/8 (100%) | Complete user interface |
+| **API** | ⚠️ 16/23 (70%) | REST endpoints and JWT authentication |
 
-Database configurations are in `src/config/db.php`:
+### Automatic test data
 
-```php
-return [
-    'class' => 'yii\db\Connection',
-    'dsn' => 'mysql:host=db;dbname=main',
-    'username' => 'main',
-    'password' => 'password',
-    'charset' => 'utf8',
-];
-```
-
-### Nginx
-
-Nginx configuration is in `docker/nginx/default.conf` and points to the `src/web` directory.
-
-### PHP
-
-The PHP Dockerfile is in `docker/php/Dockerfile` with necessary extensions for Yii2.
-
-## 🐛 Troubleshooting
-
-### Container doesn't start
+The system automatically creates:
+- **Test user**: tester@example.com / ABCdef123!@#
+- **Categories**: Food, Transport, Entertainment, Health, Education
+- **Sample expenses** to test filters and pagination
 
 ```bash
-# Check logs
+# If you need to reset the test environment
+php tests/_data/reset_test_db.php
+```
+
+## 🚨 Common troubleshooting
+
+### Containers won't start
+
+```bash
+# Check logs to understand the problem
 docker-compose logs
 
-# Rebuild containers
+# Rebuild everything from scratch
 docker-compose down
 docker-compose up -d --build
 ```
@@ -157,147 +132,41 @@ docker-compose up -d --build
 ### Permission issues
 
 ```bash
-# Fix permissions in src folder
+# Fix permissions (Linux/Mac)
 sudo chown -R $USER:$USER src/
 chmod -R 755 src/runtime
 chmod -R 755 src/web/assets
 ```
 
-### Database doesn't connect
+### Can't connect to database
 
-- Check if the `db` container is running
-- Verify credentials in `src/config/db.php`
-- Wait a few seconds for MySQL to initialize completely
+Sometimes MySQL takes a few seconds to initialize completely. Wait a bit and try again. If it persists, check if the `db` container is running with `docker-compose ps`.
 
-## 🧪 Testing
-
-This project includes a comprehensive test suite built with **Codeception** covering all layers of the application.
-
-### Test Environment Setup
-
-The project includes automated test utilities for easy setup:
-
-```bash
-# Enter the application container
-docker-compose exec app bash
-
-# Setup complete test environment
-php yii test/setup
-
-# Check test environment status
-php yii test/status
-
-# Reset test environment (clean state)
-php yii test/reset
-```
-
-### Running Tests
-
-#### All Tests
-```bash
-# Run complete test suite
-vendor/bin/codecept run
-
-# Run with verbose output
-vendor/bin/codecept run --verbose
-```
-
-#### Individual Test Suites
-```bash
-# Unit Tests (24 tests) - Models and components testing
-vendor/bin/codecept run unit
-
-# Functional Tests (14 tests) - Integration testing
-vendor/bin/codecept run functional  
-
-# Acceptance Tests (8 tests) - End-to-end web interface testing
-vendor/bin/codecept run acceptance
-
-# API Tests (23 tests) - REST API endpoints testing
-vendor/bin/codecept run api
-```
-
-#### Specific Test Files
-```bash
-# Run specific test file
-vendor/bin/codecept run tests/unit/models/UserTest.php
-vendor/bin/codecept run tests/functional/LoginFormCest.php
-vendor/bin/codecept run tests/acceptance/HomeCest.php
-vendor/bin/codecept run tests/api/ApiAuthCest.php
-```
-
-### Test Coverage
-
-| Test Suite | Status | Coverage |
-|------------|--------|----------|
-| **Unit Tests** | ✅ 24/24 (100%) | Models, Forms, Widgets |
-| **Functional Tests** | ✅ 14/14 (100%) | Controllers, Forms Integration |
-| **Acceptance Tests** | ✅ 8/8 (100%) | Complete User Workflows |
-| **API Tests** | ⚠️ 20/23 (87%) | REST Endpoints |
-| **Total** | **68/71 (96%)** | **Full Application** |
-
-### Test Structure
+## 📁 Project structure
 
 ```
-tests/
-├── unit/           # Unit tests for models and components
-│   ├── models/     # User, LoginForm testing
-│   └── widgets/    # Alert widget testing
-├── functional/     # Integration tests
-│   ├── LoginFormCest.php    # Login functionality
-│   └── ExpenseFormCest.php  # Expense management
-├── acceptance/     # End-to-end tests
-│   ├── HomeCest.php         # Homepage workflows
-│   ├── LoginCest.php        # Authentication flows
-│   └── ExpenseCest.php      # Expense management UI
-└── api/           # API endpoint tests
-    ├── ApiAuthCest.php      # Authentication API
-    └── ApiExpenseCest.php   # Expense CRUD API
+exam/
+├── docker/              # Docker configurations
+│   ├── nginx/          # Nginx config
+│   └── php/            # PHP Dockerfile
+├── src/                # Yii2 application code
+│   ├── config/         # Configurations
+│   ├── controllers/    # Application controllers
+│   ├── models/         # Models and entities
+│   ├── views/          # Templates
+│   ├── web/           # Public entry point
+│   └── tests/         # Complete test suite
+└── docker-compose.yml # Container orchestration
 ```
 
-### Test Utilities
+## 🎯 Final considerations
 
-The project includes useful console commands for test management:
+This project was developed as part of a **technical assessment** and designed to be a solid foundation for financial management systems. The test coverage is quite comprehensive and the Docker environment makes development and deployment much easier.
 
-```bash
-# Generate password hash for test data
-php yii test/password-hash [password]
+The focus was on demonstrating clean code practices, proper testing methodologies, and modern development workflows using containerization.
 
-# Create test user manually
-php yii user/create-test
+If you encounter any issues or have suggestions for improvements, feel free to open an issue or send a pull request!
 
-# Check test environment health
-php yii test/status
-```
+---
 
-### Test Database
-
-- Tests use an isolated SQLite database (`tests/_output/test.db`)
-- Automatic test user creation: `tester@example.com` / `ABCdef123!@#`
-- Clean database state maintained between test runs
-- No interference with development/production data
-
-### Development Testing
-
-```bash
-# Run tests during development
-vendor/bin/codecept run --fail-fast
-
-# Run only specific test methods
-vendor/bin/codecept run tests/unit/models/UserTest.php:testFindUserById
-
-# Generate test reports
-vendor/bin/codecept run --xml --html
-```
-
-## 📝 Development
-
-For active development:
-
-```bash
-# Keep logs visible
-docker-compose up
-
-# In another terminal, make code changes
-# Changes are automatically reflected via volume mount
-```
+**Important note**: On the first test execution, the system automatically configures the SQLite database and necessary data. No manual setup required! 🚀
