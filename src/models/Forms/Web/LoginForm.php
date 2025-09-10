@@ -1,8 +1,8 @@
 <?php
 
-namespace app\models\Forms;
+namespace app\models\Forms\Web;
 
-use app\models\User;
+use app\models\Entities\User;
 use Yii;
 use yii\base\Model;
 

@@ -19,12 +19,15 @@ $config = [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'f-7qiLrwmwzcIVrsilafMizCJJ8yLPbF',
+            'parsers' => [
+                'application/json' => 'yii\web\JsonParser',
+            ],
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
         'user' => [
-            'identityClass' => 'app\models\User',
+            'identityClass' => 'app\models\Entities\User',
             'enableAutoLogin' => true,
             'loginUrl' => ['auth/login'],
         ],
@@ -50,7 +53,21 @@ $config = [
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
-            'rules' => [],
+            'rules' => [
+                // API Routes
+                'POST api/auth/login' => 'api/auth/login',
+                'GET api/auth/verify' => 'api/auth/verify',
+                'POST api/auth/refresh' => 'api/auth/refresh',
+
+                'GET api/expense' => 'api/expense/index',
+                'POST api/expense' => 'api/expense/create',
+                'GET api/expense/<id:\d+>' => 'api/expense/view',
+                'PUT api/expense/<id:\d+>' => 'api/expense/update',
+                'DELETE api/expense/<id:\d+>' => 'api/expense/delete',
+
+                // Default routes
+                '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
+            ],
         ],
     ],
     'params' => $params,

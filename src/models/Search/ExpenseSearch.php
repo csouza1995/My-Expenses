@@ -2,7 +2,7 @@
 
 namespace app\models\Search;
 
-use app\models\Expense;
+use app\models\Entities\Expense;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;

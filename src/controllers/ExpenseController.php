@@ -3,12 +3,11 @@
 namespace app\controllers;
 
 use app\models\Enums\ExpenseCategoriesEnum;
-use app\models\Expense;
-use app\models\Forms\ExpenseForm;
+use app\models\Entities\Expense;
+use app\models\Forms\Web\ExpenseForm;
 use app\models\Search\ExpenseSearch;
 use Yii;
 use yii\web\Controller;
-use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 

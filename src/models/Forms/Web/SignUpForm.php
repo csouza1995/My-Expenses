@@ -1,12 +1,12 @@
 <?php
 
-namespace app\models\Forms;
+namespace app\models\Forms\Web;
 
-use app\models\User;
+use app\models\Entities\User;
 use yii\base\Model;
 
 /**
- * LoginForm is the model behind the login form.
+ * SignUpForm is the model behind the signup form.
  *
  * @property-read User|null $user
  *

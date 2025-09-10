@@ -1,127 +1,127 @@
-# Projeto Yii2 com Docker
+# Yii2 Project with Docker
 
-Este projeto é uma aplicação Yii2 Basic configurada para execução em containers Docker, incluindo PHP 8.2, Nginx e MySQL 8.0.
+This project is a Yii2 Basic application configured to run in Docker containers, including PHP 8.2, Nginx, and MySQL 8.0.
 
-## 🐳 Configuração Docker
+## 🐳 Docker Configuration
 
-### Pré-requisitos
+### Prerequisites
 
-- Docker (versão 20.10+)
-- Docker Compose (versão 2.0+)
+- Docker (version 20.10+)
+- Docker Compose (version 2.0+)
 - Git
 
-### Estrutura dos Containers
+### Container Structure
 
-- **app**: Container PHP 8.2-FPM com Composer
-- **nginx**: Servidor web Nginx (porta 8080)
-- **db**: Banco de dados MySQL 8.0 (porta 3307)
+- **app**: PHP 8.2-FPM container with Composer
+- **nginx**: Nginx web server (port 8080)
+- **db**: MySQL 8.0 database (port 3307)
 
-## 🚀 Instalação e Execução
+## 🚀 Installation and Execution
 
-### 1. Clone o projeto
+### 1. Clone the project
 
 ```bash
-git clone <url-do-repositorio>
+git clone <repository-url>
 cd exam
 ```
 
-### 2. Subir os containers
+### 2. Start the containers
 
 ```bash
-# Construir e iniciar todos os containers
+# Build and start all containers
 docker-compose up -d --build
 
-# Verificar se os containers estão rodando
+# Check if containers are running
 docker-compose ps
 ```
 
-### 3. Instalar dependências do Composer
+### 3. Install Composer dependencies
 
 ```bash
-# Entrar no container da aplicação
+# Enter the application container
 docker-compose exec app bash
 
-# Dentro do container, instalar as dependências
+# Inside the container, install dependencies
 composer install
 
-# Sair do container
+# Exit the container
 exit
 ```
-ou
+or
 ```bash
-# Rodar instalação das dependências fora do container
+# Run dependency installation outside the container
 docker-compose exec app composer install
 ```
 
-### 4. Configurar o banco de dados
+### 4. Configure the database
 
 ```bash
-# Executar as migrações (se houver)
+# Run migrations (if any)
 docker-compose exec app php yii migrate
 
-# Ou configurar manualmente no arquivo config/db.php
+# Or configure manually in config/db.php file
 ```
 
-### 5. Acessar a aplicação
+### 5. Access the application
 
 - **Frontend**: http://localhost:8080
 - **MySQL**: localhost:3307
-  - Usuário: `main`
-  - Senha: `password`
+  - User: `main`
+  - Password: `password`
   - Database: `main`
 
-## 🛠️ Comandos Úteis
+## 🛠️ Useful Commands
 
-### Gerenciamento dos Containers
+### Container Management
 
 ```bash
-# Iniciar os containers
+# Start containers
 docker-compose up -d
 
-# Parar os containers
+# Stop containers
 docker-compose down
 
-# Parar e remover volumes (CUIDADO: apaga dados do banco)
+# Stop and remove volumes (CAUTION: deletes database data)
 docker-compose down -v
 
-# Ver logs
+# View logs
 docker-compose logs -f
 
-# Ver logs de um serviço específico
+# View logs of a specific service
 docker-compose logs -f app
 ```
 
-### Comandos Yii2
+### Yii2 Commands
 
 ```bash
-# Executar comandos Yii dentro do container
+# Execute Yii commands inside the container
 docker-compose exec app php yii
 
-# Listar comandos disponíveis
+# List available commands
 docker-compose exec app php yii help
 
-# Gerar cache
+# Generate cache
 docker-compose exec app php yii cache/flush-all
 ```
 
-### Acesso aos Containers
+### Container Access
 
 ```bash
-# Entrar no container da aplicação
+# Enter the application container
 docker-compose exec app bash
 
-# Entrar no container do Nginx
+# Enter the Nginx container
 docker-compose exec nginx bash
 
-# Entrar no container do MySQL
+# Enter the MySQL container
 docker-compose exec db mysql -u main -p
 ```
 
-## 🔧 Configurações
+## 🔧 Configurations
 
-### Banco de Dados
+### Database
 
-As configurações do banco estão em `src/config/db.php`:
+Database configurations are in `src/config/db.php`:
 
 ```php
 return [
@@ -135,72 +135,55 @@ return [
 
 ### Nginx
 
-A configuração do Nginx está em `docker/nginx/default.conf` e aponta para o diretório `src/web`.
+Nginx configuration is in `docker/nginx/default.conf` and points to the `src/web` directory.
 
 ### PHP
 
-O Dockerfile do PHP está em `docker/php/Dockerfile` com as extensões necessárias para o Yii2.
+The PHP Dockerfile is in `docker/php/Dockerfile` with necessary extensions for Yii2.
 
-## 📁 Estrutura do Projeto
+## 🐛 Troubleshooting
 
-```
-exam/
-├── docker/                 # Configurações Docker
-│   ├── nginx/              # Configuração Nginx
-│   └── php/                # Dockerfile PHP
-├── src/                    # Código fonte Yii2
-│   ├── config/             # Configurações
-│   ├── controllers/        # Controllers
-│   ├── models/             # Models
-│   ├── views/              # Views
-│   ├── web/                # Arquivos públicos
-│   └── composer.json       # Dependências PHP
-└── docker-compose.yml      # Configuração dos containers
-```
-
-## 🐛 Solução de Problemas
-
-### Container não sobe
+### Container doesn't start
 
 ```bash
-# Verificar logs
+# Check logs
 docker-compose logs
 
-# Reconstruir containers
+# Rebuild containers
 docker-compose down
 docker-compose up -d --build
 ```
 
-### Problemas de permissão
+### Permission issues
 
 ```bash
-# Ajustar permissões na pasta src
+# Fix permissions in src folder
 sudo chown -R $USER:$USER src/
 chmod -R 755 src/runtime
 chmod -R 755 src/web/assets
 ```
 
-### Banco de dados não conecta
+### Database doesn't connect
 
-- Verificar se o container `db` está rodando
-- Conferir as credenciais em `src/config/db.php`
-- Aguardar alguns segundos para o MySQL inicializar completamente
+- Check if the `db` container is running
+- Verify credentials in `src/config/db.php`
+- Wait a few seconds for MySQL to initialize completely
 
-## 🧪 Testes
+## 🧪 Testing
 
 ```bash
-# Executar testes dentro do container
+# Run tests inside the container
 docker-compose exec app vendor/bin/codecept run
 ```
 
-## 📝 Desenvolvimento
+## 📝 Development
 
-Para desenvolvimento ativo:
+For active development:
 
 ```bash
-# Manter logs visíveis
+# Keep logs visible
 docker-compose up
 
-# Em outro terminal, fazer alterações no código
-# As mudanças são refletidas automaticamente via volume mount
+# In another terminal, make code changes
+# Changes are automatically reflected via volume mount
 ```

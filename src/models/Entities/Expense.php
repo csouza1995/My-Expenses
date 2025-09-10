@@ -1,13 +1,14 @@
 <?php
 
-namespace app\models;
+namespace app\models\Entities;
 
 use app\models\Enums\ExpenseCategoriesEnum;
+use app\models\Traits\UseTimestamps;
 use Yii;
 
 class Expense extends \yii\db\ActiveRecord
 {
-    use Traits\UseTimestamps;
+    use UseTimestamps;
 
     /**
      * {@inheritdoc}

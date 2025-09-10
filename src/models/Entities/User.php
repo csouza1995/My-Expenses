@@ -1,13 +1,14 @@
 <?php
 
-namespace app\models;
+namespace app\models\Entities;
 
 use Yii;
 use yii\db\ActiveRecord;
+use app\models\Traits\UseTimestamps;
 
 class User extends ActiveRecord implements \yii\web\IdentityInterface
 {
-    use Traits\UseTimestamps;
+    use UseTimestamps;
 
     public static function tableName()
     {
@@ -45,14 +46,33 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
     }
 
     /**
-     * Finds user by username
+     * Finds user by email
      *
-     * @param string $username
+     * @param string $email
      * @return static|null
      */
     public static function findByEmail($email)
     {
         return static::findOne(['email' => $email]);
+    }
+
+    /**
+     * Finds user by username (using name field as username)
+     *
+     * @param string $username
+     * @return static|null
+     */
+    public static function findByUsername($username)
+    {
+        return static::findOne(['name' => $username]);
+    }
+
+    /**
+     * Get username (name field)
+     */
+    public function getUsername()
+    {
+        return $this->name;
     }
 
     /**

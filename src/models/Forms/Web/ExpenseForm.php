@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models\Forms;
+namespace app\models\Forms\Web;
 
 use app\models\Enums\ExpenseCategoriesEnum;
 use yii\base\Model;
@@ -11,6 +11,7 @@ class ExpenseForm extends Model
     public $category;
     public $value;
     public $date;
+    public $user_id;
 
     /**
      * @return array the validation rules.
