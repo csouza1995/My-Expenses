@@ -2,7 +2,7 @@ actor: AcceptanceTester
 modules:
   enabled:
     - PhpBrowser:
-        url: http://localhost:8080/
+        url: http://nginx/
     - Yii2:
         part: orm
         configFile: "config/test.php"

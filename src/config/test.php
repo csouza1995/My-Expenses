@@ -51,6 +51,7 @@ return [
             'rules' => [
                 // API Routes
                 'POST api/auth/login' => 'api/auth/login',
+                'POST api/auth/register' => 'api/auth/register',
                 'GET api/auth/verify' => 'api/auth/verify',
                 'POST api/auth/refresh' => 'api/auth/refresh',
 

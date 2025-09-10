@@ -77,7 +77,7 @@ class Expense extends \yii\db\ActiveRecord
 
     public function getCategoryName()
     {
-        return ExpenseCategoriesEnum::getLabel($this->category);
+        return $this->category ? ExpenseCategoriesEnum::getLabel($this->category) : 'Sem categoria';
     }
 
     public function getDateFormatted()

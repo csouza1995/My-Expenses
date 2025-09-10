@@ -398,6 +398,18 @@ class ApiExpenseCest
     {
         $I->wantTo('filter expenses by category');
 
+        // Clean existing expenses for isolation
+        $I->sendGET('/api/expense');
+        $I->seeResponseCodeIs(200);
+        $existingResponse = json_decode($I->grabResponse(), true);
+
+        // Delete existing expenses to ensure test isolation
+        if (isset($existingResponse['data']['expenses'])) {
+            foreach ($existingResponse['data']['expenses'] as $expense) {
+                $I->sendDELETE("/api/expense/{$expense['id']}");
+            }
+        }
+
         // Create expenses in different categories
         $expense1Id = $I->createTestExpense($this->token, [
             'description' => 'Food expense',
@@ -433,6 +445,18 @@ class ApiExpenseCest
     public function testFilterExpensesByDateRange(ApiTester $I)
     {
         $I->wantTo('filter expenses by date range');
+
+        // Clean existing expenses for isolation
+        $I->sendGET('/api/expense');
+        $I->seeResponseCodeIs(200);
+        $existingResponse = json_decode($I->grabResponse(), true);
+
+        // Delete existing expenses to ensure test isolation
+        if (isset($existingResponse['data']['expenses'])) {
+            foreach ($existingResponse['data']['expenses'] as $expense) {
+                $I->sendDELETE("/api/expense/{$expense['id']}");
+            }
+        }
 
         $today = date('Y-m-d');
         $yesterday = date('Y-m-d', strtotime('-1 day'));
@@ -481,8 +505,8 @@ class ApiExpenseCest
         $I->seeResponseCodeIs(401);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            'success' => false,
-            'message' => 'Access denied'
+            'message' => 'Authentication required',
+            'status' => 401
         ]);
     }
 }

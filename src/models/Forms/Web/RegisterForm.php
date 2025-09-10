@@ -6,12 +6,12 @@ use app\models\Entities\User;
 use yii\base\Model;
 
 /**
- * SignUpForm is the model behind the signup form.
+ * RegisterForm is the model behind the register form.
  *
  * @property-read User|null $user
  *
  */
-class SignUpForm extends Model
+class RegisterForm extends Model
 {
     public $name;
     public $email;

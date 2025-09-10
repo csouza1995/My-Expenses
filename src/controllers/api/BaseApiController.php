@@ -98,8 +98,10 @@ class BaseApiController extends Controller
     /**
      * Standard success response
      */
-    protected function successResponse($data = null, $message = 'Success')
+    protected function successResponse($data = null, $message = 'Success', $statusCode = 200)
     {
+        Yii::$app->response->setStatusCode($statusCode);
+
         $response = [
             'success' => true,
             'message' => $message

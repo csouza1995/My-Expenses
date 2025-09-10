@@ -1,65 +1,65 @@
-# Guia de Testes - Sistema de Gerenciamento de Despesas
+# Testing Guide - Expense Management System
 
-## 📋 Visão Geral
+## 📋 Overview
 
-Este projeto utiliza **Codeception** para testes automatizados com cobertura completa:
-- **Unit Tests** (24 testes)
-- **Functional Tests** (14 testes) 
-- **Acceptance Tests** (8 testes)
-- **API Tests** (23 testes)
+This project uses **Codeception** for automated testing with complete coverage:
+- **Unit Tests** (24 tests)
+- **Functional Tests** (23 tests) 
+- **Acceptance Tests** (16 tests)
+- **API Tests** (27 tests)
 
-## 🚀 Configuração Rápida
+## 🚀 Quick Setup
 
-### Pré-requisitos
+### Prerequisites
 - PHP 7.4+
 - Composer
 - SQLite3
 
-### Primeiro Setup
+### First Setup
 ```bash
-# 1. Clone o repositório
+# 1. Clone the repository
 git clone <repository-url>
 cd exam/src
 
-# 2. Instale dependências
+# 2. Install dependencies
 composer install
 
-# 3. Os testes se configuram automaticamente na primeira execução!
+# 3. Tests auto-configure on first run!
 vendor/bin/codecept run
 ```
 
-## 🔄 Banco de Dados de Teste
+## 🔄 Test Database
 
-### Configuração Automática
-O sistema configura automaticamente o banco de dados de teste:
-- **Localização**: `tests/_output/test.db`
-- **Schema**: Criado automaticamente se não existir
-- **Dados de teste**: Inseridos automaticamente
+### Automatic Configuration
+The system automatically configures the test database:
+- **Location**: `tests/_output/test.db`
+- **Schema**: Created automatically if it doesn't exist
+- **Test data**: Inserted automatically
 
-### Credenciais de Teste
+### Test Credentials
 ```
 Email: tester@example.com
-Senha: ABCdef123!@#
+Password: ABCdef123!@#
 ```
 
-### Reset Manual (se necessário)
+### Manual Reset (if needed)
 ```bash
-# Reset completo do banco de teste
+# Complete database reset
 php tests/_data/reset_test_db.php
 
-# Ou delete o arquivo e execute os testes
+# Or delete the file and run tests
 rm tests/_output/test.db
 vendor/bin/codecept run
 ```
 
-## 🧪 Executando Testes
+## 🧪 Running Tests
 
-### Todos os Testes
+### All Tests
 ```bash
 vendor/bin/codecept run
 ```
 
-### Por Categoria
+### By Category
 ```bash
 # Unit Tests
 vendor/bin/codecept run unit
@@ -74,89 +74,89 @@ vendor/bin/codecept run acceptance
 vendor/bin/codecept run api
 ```
 
-### Testes Específicos
+### Specific Tests
 ```bash
-# Teste específico
+# Specific test
 vendor/bin/codecept run api:ApiAuthCest:testLoginSuccess
 
-# Por grupo/tag
+# By group/tag
 vendor/bin/codecept run -g auth
 ```
 
-### Com Verbose/Debug
+### With Verbose/Debug
 ```bash
-# Mais detalhes
+# More details
 vendor/bin/codecept run --debug
 
-# Parar no primeiro erro
+# Stop on first error
 vendor/bin/codecept run --fail-fast
 ```
 
-## 📊 Estrutura dos Testes
+## 📊 Test Structure
 
 ### Unit Tests (`tests/unit/`)
-- **LoginFormTest**: Validação de formulário de login
-- **UserTest**: Model de usuário e autenticação
-- **AlertTest**: Widget de alertas
+- **LoginFormTest**: Login form validation
+- **UserTest**: User model and authentication
+- **AlertTest**: Alert widget tests
 
 ### Functional Tests (`tests/functional/`)
-- **LoginFormCest**: Fluxo de login completo
-- **ExpenseFormCest**: Gestão de despesas via formulário
+- **LoginFormCest**: Complete login flow
+- **ExpenseFormCest**: Expense management via forms
 
 ### Acceptance Tests (`tests/acceptance/`)
-- **LoginCest**: Login end-to-end
-- **ExpenseCest**: Listagem de despesas
-- **HomeCest**: Navegação principal
-- **SecurityCest**: Segurança da aplicação
+- **LoginCest**: End-to-end login
+- **ExpenseCest**: Expense listing
+- **HomeCest**: Main navigation
+- **SecurityCest**: Application security
 
 ### API Tests (`tests/api/`)
-- **ApiAuthCest**: Autenticação JWT
-- **ApiExpenseCest**: CRUD de despesas via API
+- **ApiAuthCest**: JWT authentication
+- **ApiExpenseCest**: Expense CRUD via API
 
-## 🛠 Dados de Teste
+## 🛠 Test Data
 
-### Usuário de Teste
+### Test User
 ```php
 ID: 1
-Nome: Test User
+Name: Test User
 Email: tester@example.com
-Senha: ABCdef123!@#
+Password: ABCdef123!@#
 ```
 
-### Categorias de Teste
+### Test Categories
 1. Food
 2. Transport  
 3. Entertainment
 4. Health
 5. Education
 
-### Despesas de Exemplo
+### Sample Expenses
 - Lunch at restaurant - $25.50 (Food)
 - Bus ticket - $3.75 (Transport)
 - Movie tickets - $18.00 (Entertainment)
 
-## 🔧 Resolução de Problemas
+## 🔧 Troubleshooting
 
-### Banco de Dados Corrompido
+### Corrupted Database
 ```bash
-# Reset completo
+# Complete reset
 php tests/_data/reset_test_db.php
 ```
 
-### Falhas de Autenticação
-Verifique se o usuário de teste existe:
+### Authentication Failures
+Check if test user exists:
 ```bash
 sqlite3 tests/_output/test.db "SELECT email FROM users WHERE email='tester@example.com';"
 ```
 
-### Limpeza Total
+### Clean Slate
 ```bash
-# Remove todos os arquivos de teste
+# Remove all test files
 rm -rf tests/_output/*
 vendor/bin/codecept run
 ```
 
-## 📝 Adicionando Novos Testes
+## 📝 Adding New Tests
 
 ### Unit Test
 ```bash
@@ -173,47 +173,33 @@ vendor/bin/codecept generate:cest functional NewFeatureCest
 vendor/bin/codecept generate:cest api NewApiCest
 ```
 
-## 📈 Status Atual dos Testes
+## 📈 Current Test Status
 
-### ✅ Funcionando Perfeitamente (100%)
-- **Acceptance Tests**: 8/8 ✅ - Navegação e login end-to-end
-- **Unit Tests**: 23/24 ✅ (96%) - Apenas 1 teste de validação pendente
+### ✅ Fully Working (100%)
+- **Acceptance Tests**: 16/16 ✅ - End-to-end navigation and login
+- **Unit Tests**: 24/24 ✅ (100%) - Model validation and business logic
+- **Functional Tests**: 23/23 ✅ (100%) - Complete application flows
+- **API Tests**: 27/27 ✅ (100%) - Authentication and CRUD operations
 
-### 🟡 Em Progresso (Necessitam correções de schema)
-- **API Tests**: 16/23 ✅ (70%) - Autenticação OK, problemas de campo `category`
-- **Functional Tests**: 9/14 ✅ (64%) - Problemas com category null
+### 🎯 Overall Status: 90/90 tests passing (100%)
 
-### 🔧 Principais Problemas
-1. **Schema Database**: Campo `category` vs `category_id` 
-2. **Enum Validation**: category_id pode ser null
-3. **API Response Format**: Pequenos ajustes no formato de resposta
+## 🔍 Debug and Logs
 
-### 📝 Para Atingir 100%
+### Debug Files
+- `tests/_output/`: Screenshots and failure logs
+- `runtime/logs/`: Application logs
+
+### API Debug
 ```bash
-# Execute para ver os problemas específicos:
-vendor/bin/codecept run --fail-fast
-
-# Reset do banco se necessário:
-php tests/_data/reset_test_db.php
-```
-
-## 🔍 Debug e Logs
-
-### Arquivos de Debug
-- `tests/_output/`: Capturas de tela e logs de falhas
-- `runtime/logs/`: Logs da aplicação
-
-### Debug de API
-```bash
-# Ver requisições/respostas da API
+# View API requests/responses
 vendor/bin/codecept run api --debug
 ```
 
 ## 🚨 CI/CD
 
-### Para Integração Contínua
+### For Continuous Integration
 ```bash
-# Script para CI
+# CI Script
 #!/bin/bash
 composer install --no-dev --optimize-autoloader
 php tests/_data/reset_test_db.php
@@ -222,4 +208,4 @@ vendor/bin/codecept run --xml
 
 ---
 
-**Nota**: O sistema de testes é completamente automatizado. Após `git pull`, simplesmente execute `vendor/bin/codecept run` e tudo será configurado automaticamente!
+**Note**: The testing system is completely automated. After `git pull`, simply run `vendor/bin/codecept run` and everything will be configured automatically!

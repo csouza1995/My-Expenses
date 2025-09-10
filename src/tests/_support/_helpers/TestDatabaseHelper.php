@@ -134,12 +134,11 @@ class TestDatabaseHelper
                 description TEXT NOT NULL,
                 value DECIMAL(10,2) NOT NULL,
                 date DATE NOT NULL,
-                category_id INTEGER,
+                category INTEGER,
                 user_id INTEGER NOT NULL,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (user_id) REFERENCES users(id),
-                FOREIGN KEY (category_id) REFERENCES category(id)
+                FOREIGN KEY (user_id) REFERENCES users(id)
             )
         ")->execute();
 
@@ -201,7 +200,7 @@ class TestDatabaseHelper
                 'description' => 'Lunch at restaurant',
                 'value' => 25.50,
                 'date' => '2025-09-01',
-                'category_id' => 1,
+                'category' => 1,
                 'user_id' => 1
             ],
             [
@@ -209,7 +208,7 @@ class TestDatabaseHelper
                 'description' => 'Bus ticket',
                 'value' => 3.75,
                 'date' => '2025-09-02',
-                'category_id' => 2,
+                'category' => 2,
                 'user_id' => 1
             ],
             [
@@ -217,7 +216,7 @@ class TestDatabaseHelper
                 'description' => 'Movie tickets',
                 'value' => 18.00,
                 'date' => '2025-09-03',
-                'category_id' => 3,
+                'category' => 3,
                 'user_id' => 1
             ]
         ];
@@ -228,7 +227,7 @@ class TestDatabaseHelper
                 'description' => $expense['description'],
                 'value' => $expense['value'],
                 'date' => $expense['date'],
-                'category_id' => $expense['category_id'],
+                'category' => $expense['category'],
                 'user_id' => $expense['user_id'],
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s')

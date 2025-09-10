@@ -43,7 +43,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
 
         if (Yii::$app->user->isGuest) {
             // auth links
-            $navItems[] = ['label' => 'Inscrever-se', 'url' => ['/auth/signup'], 'options' => ['class' => 'ml-auto']];
+            $navItems[] = ['label' => 'Registrar-se', 'url' => ['/auth/register'], 'options' => ['class' => 'ml-auto']];
             $navItems[] = ['label' => 'Entrar', 'url' => ['/auth/login'], 'options' => ['class' => 'pull-right']];
         } else {
             // expenses link

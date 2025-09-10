@@ -4,10 +4,11 @@ namespace app\controllers\api;
 
 use Yii;
 use app\models\Forms\Api\LoginForm;
+use app\models\Forms\Api\RegisterForm;
 
 /**
  * API Authentication Controller
- * Handles login for existing users only
+ * Handles authentication (login and registration)
  */
 class AuthController extends BaseApiController
 {
@@ -39,6 +40,36 @@ class AuthController extends BaseApiController
                 'email' => $user->email ?? null
             ]
         ], 'Login successful');
+    }
+
+    /**
+     * Register endpoint
+     * POST /api/auth/register
+     */
+    public function actionRegister()
+    {
+        $model = new RegisterForm();
+        $data = Yii::$app->request->getBodyParams();
+
+        if (!$model->load($data, '') || !$model->validate()) {
+            return $this->errorResponse('Validation failed', $model->errors, 422);
+        }
+
+        $user = $model->register();
+        if (!$user) {
+            return $this->errorResponse('Registration failed', null, 400);
+        }
+
+        $token = $this->generateJwtToken($user->id);
+
+        return $this->successResponse([
+            'token' => $token,
+            'user' => [
+                'id' => $user->id,
+                'username' => $user->name,
+                'email' => $user->email
+            ]
+        ], 'Registration successful', 201);
     }
 
     /**

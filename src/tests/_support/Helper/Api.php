@@ -29,6 +29,36 @@ class Api extends Module
     }
 
     /**
+     * Generate test user registration data
+     */
+    public function getTestRegisterData($suffix = null)
+    {
+        $suffix = $suffix ?: time();
+        return [
+            'name' => 'Test User ' . $suffix,
+            'email' => 'testuser' . $suffix . '@example.com',
+            'password' => 'TestPassword123!@#'
+        ];
+    }
+
+    /**
+     * Register new user and get JWT token
+     */
+    public function registerAndGetToken($userData = null)
+    {
+        $rest = $this->getRest();
+        $userData = $userData ?: $this->getTestRegisterData();
+
+        $rest->sendPOST('/api/auth/register', $userData);
+        $rest->seeResponseCodeIs(201);
+        $rest->seeResponseIsJson();
+        $rest->seeResponseContainsJson(['success' => true]);
+
+        $response = json_decode($rest->grabResponse(), true);
+        return $response['data']['token'];
+    }
+
+    /**
      * Login and get JWT token
      */
     public function loginAndGetToken()

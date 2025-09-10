@@ -51,7 +51,7 @@ class ExpenseSearch extends Model
             ],
         ]);
 
-        $this->load($params);
+        $this->load($params, '');  // Empty formName to load params directly
 
         if (!$this->validate()) {
             // If validation fails, return the data provider without any filtering

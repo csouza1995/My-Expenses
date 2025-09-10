@@ -3,19 +3,59 @@
 ## 📋 **Overview**
 
 RESTful API for personal expense management with JWT authentication. 
-**Important:** Only users already registered via web interface can use the API.
+Users can register and login directly through the API endpoints.
 
 **Base URL:** `http://localhost:8080/api`
 
 ## 🔐 **Authentication**
 
-### Login (Existing Users Only)
+### Register New User
+```http
+POST /api/auth/register
+Content-Type: application/json
+
+{
+    "name": "string",
+    "email": "string",
+    "password": "string"
+}
+```
+
+**Success Response (201):**
+```json
+{
+    "success": true,
+    "message": "Registration successful",
+    "data": {
+        "token": "jwt_token_here",
+        "user": {
+            "id": 1,
+            "username": "user",
+            "email": "user@example.com"
+        }
+    }
+}
+```
+
+**Error Response (422):**
+```json
+{
+    "success": false,
+    "message": "Validation failed",
+    "errors": {
+        "email": ["This email address has already been taken."],
+        "password": ["Password should contain at least 6 characters."]
+    }
+}
+```
+
+### Login (Existing Users)
 ```http
 POST /api/auth/login
 Content-Type: application/json
 
 {
-    "username": "string",
+    "email": "string",
     "password": "string"
 }
 ```
@@ -72,7 +112,7 @@ Search for expenses containing "lunch" in description.
 ```http
 GET /api/expense?category=1
 ```
-Get only "Food" category expenses.
+Get only "Alimentação" category expenses.
 
 #### 📅 **Filter by Date Range**
 ```http
@@ -118,7 +158,7 @@ Order options: `asc`, `desc`
                 "id": 1,
                 "description": "Restaurant lunch",
                 "category": 1,
-                "category_name": "Food",
+                "category_name": "Alimentação",
                 "value": 25.50,
                 "date": "2025-09-10",
                 "date_formatted": "10/09/2025",
@@ -129,7 +169,7 @@ Order options: `asc`, `desc`
                 "id": 2,
                 "description": "Coffee shop",
                 "category": 1,
-                "category_name": "Food",
+                "category_name": "Alimentação",
                 "value": 8.75,
                 "date": "2025-09-09",
                 "date_formatted": "09/09/2025",
@@ -163,7 +203,7 @@ Authorization: Bearer {jwt_token}
             "id": 1,
             "description": "Restaurant lunch",
             "category": 1,
-            "category_name": "Food",
+            "category_name": "Alimentação",
             "value": 25.50,
             "date": "2025-09-10",
             "date_formatted": "10/09/2025",
@@ -199,13 +239,12 @@ Content-Type: application/json
 ```
 
 **Available Categories:**
-- `1` - Food
-- `2` - Transportation  
-- `3` - Entertainment
-- `4` - Health
-- `5` - Education
-- `6` - Housing
-- `7` - Others
+- `0` - Outros
+- `1` - Alimentação
+- `2` - Transporte  
+- `3` - Moradia
+- `4` - Saúde
+- `5` - Lazer
 
 **Success Response (201):**
 ```json
@@ -217,7 +256,7 @@ Content-Type: application/json
             "id": 15,
             "description": "Restaurant lunch",
             "category": 1,
-            "category_name": "Food",
+            "category_name": "Alimentação",
             "value": 25.50,
             "date": "2025-09-10",
             "date_formatted": "10/09/2025",
@@ -326,11 +365,18 @@ GET /api/expense?date_from=2025-09-03&sort=created_at&order=desc&per_page=20
 
 ### Using cURL
 
+**Register New User:**
+```bash
+curl -X POST http://localhost:8080/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"name":"John Doe","email":"john@example.com","password":"SecurePass123"}'
+```
+
 **Login:**
 ```bash
 curl -X POST http://localhost:8080/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"username":"your_user","password":"your_password"}'
+  -d '{"email":"john@example.com","password":"SecurePass123"}'
 ```
 
 **Create Expense:**

@@ -6,6 +6,125 @@
 class ApiAuthCest
 {
     /**
+     * Test user registration with valid data
+     */
+    public function testRegisterSuccess(ApiTester $I)
+    {
+        $I->wantTo('register a new user with valid data');
+
+        $userData = [
+            'name' => 'New Test User',
+            'email' => 'newuser' . time() . '@example.com', // Unique email
+            'password' => 'NewPassword123!@#'
+        ];
+
+        $I->sendPOST('/api/auth/register', $userData);
+
+        $I->seeResponseCodeIs(201);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            'success' => true,
+            'message' => 'Registration successful'
+        ]);
+
+        // Validate response structure
+        $I->seeResponseJsonMatchesJsonPath('$.data.token');
+        $I->seeResponseJsonMatchesJsonPath('$.data.user.id');
+        $I->seeResponseJsonMatchesJsonPath('$.data.user.username');
+        $I->seeResponseJsonMatchesJsonPath('$.data.user.email');
+
+        // Check token format (JWT has 3 parts separated by dots)
+        $response = json_decode($I->grabResponse(), true);
+        $tokenParts = explode('.', $response['data']['token']);
+        $I->assertEquals(3, count($tokenParts), 'JWT token should have 3 parts');
+
+        // Verify user data in response
+        $I->assertEquals($userData['name'], $response['data']['user']['username']);
+        $I->assertEquals($userData['email'], $response['data']['user']['email']);
+    }
+
+    /**
+     * Test registration with existing email
+     */
+    public function testRegisterDuplicateEmail(ApiTester $I)
+    {
+        $I->wantTo('fail registration with existing email');
+
+        $userData = [
+            'name' => 'Test User',
+            'email' => 'tester@example.com', // Existing email
+            'password' => 'NewPassword123!@#'
+        ];
+
+        $I->sendPOST('/api/auth/register', $userData);
+
+        $I->seeResponseCodeIs(422);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            'success' => false,
+            'message' => 'Validation failed'
+        ]);
+        $I->seeResponseJsonMatchesJsonPath('$.errors.email');
+    }
+
+    /**
+     * Test registration with invalid data
+     */
+    public function testRegisterInvalidData(ApiTester $I)
+    {
+        $I->wantTo('fail registration with invalid data');
+
+        // Missing required fields
+        $userData = [
+            'name' => '',
+            'email' => 'invalid-email',
+            'password' => '123' // Too short
+        ];
+
+        $I->sendPOST('/api/auth/register', $userData);
+
+        $I->seeResponseCodeIs(422);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            'success' => false,
+            'message' => 'Validation failed'
+        ]);
+    }
+
+    /**
+     * Test login after successful registration
+     */
+    public function testLoginAfterRegistration(ApiTester $I)
+    {
+        $I->wantTo('login with newly registered user');
+
+        // First register a user
+        $userData = [
+            'name' => 'Login Test User',
+            'email' => 'logintest' . time() . '@example.com',
+            'password' => 'LoginPassword123!@#'
+        ];
+
+        $I->sendPOST('/api/auth/register', $userData);
+        $I->seeResponseCodeIs(201);
+
+        // Now try to login with the same credentials
+        $loginData = [
+            'email' => $userData['email'],
+            'password' => $userData['password']
+        ];
+
+        $I->sendPOST('/api/auth/login', $loginData);
+
+        $I->seeResponseCodeIs(200);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson([
+            'success' => true,
+            'message' => 'Login successful'
+        ]);
+    }
+
+    /**
      * Test login with valid email and password
      */
     public function testLoginSuccess(ApiTester $I)

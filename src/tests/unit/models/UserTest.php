@@ -47,9 +47,9 @@ class UserTest extends \Codeception\Test\Unit
     {
         $user = new User();
 
-        // Since User model doesn't have validation rules defined,
-        // basic validation should pass
-        verify($user->validate())->true();
+        // User model has validation rules (name and email are required)
+        // so validation should fail with empty user
+        verify($user->validate())->false();
 
         // Test user creation with valid data
         $user->name = 'Valid User';
