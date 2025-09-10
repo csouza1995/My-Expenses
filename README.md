@@ -20,7 +20,7 @@ I structured the project with 3 main containers:
 
 ### 1. Clone and enter the project
 ```bash
-git clone <repository-url>
+git clone https://github.com/csouza1995/My-Expenses.git my_expenses
 cd my_expenses
 ```
 
