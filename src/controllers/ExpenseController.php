@@ -48,30 +48,15 @@ class ExpenseController extends Controller
     public function actionIndex()
     {
         // data index
-        // $searchModel = new ExpenseSearch();
-        // $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        $dataProvider = new ActiveDataProvider(
-            [
-                'query' => Expense::find()->where(['user_id' => Yii::$app->user->id]),
-                'pagination' => [
-                    'pageSize' => 15,
-                ],
-                'sort' => [
-                    'defaultOrder' => [
-                        'created_at' => SORT_DESC,
-                    ],
-                ],
-            ]
-        );
+        $searchModel = new ExpenseSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         // form
         $model = new ExpenseForm();
 
         return $this->render('index', [
             'dataProvider' => Yii::$app->user->isGuest ? null : $dataProvider,
-            'searchModel' => $searchModel ?? null,
-
+            'searchModel' => $searchModel,
             'model' => $model,
             'categories' => ExpenseCategoriesEnum::getList(),
         ]);
