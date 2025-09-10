@@ -11,7 +11,7 @@ use yii\base\Model;
  */
 class LoginForm extends Model
 {
-    public $username;
+    public $email;
     public $password;
 
     private $_user = false;
@@ -22,7 +22,7 @@ class LoginForm extends Model
     public function rules()
     {
         return [
-            [['username', 'password'], 'required'],
+            [['email', 'password'], 'required'],
             ['password', 'validatePassword'],
         ];
     }
@@ -40,13 +40,13 @@ class LoginForm extends Model
             $user = $this->getUser();
 
             if (!$user || !$user->validatePassword($this->password)) {
-                $this->addError($attribute, 'Incorrect username or password.');
+                $this->addError($attribute, 'Incorrect email or password.');
             }
         }
     }
 
     /**
-     * Logs in a user using the provided username and password.
+     * Logs in a user using the provided email and password.
      * @return bool whether the user is logged in successfully
      */
     public function login()
@@ -58,20 +58,14 @@ class LoginForm extends Model
     }
 
     /**
-     * Finds user by [[username]] (supports both username and email)
+     * Finds user by [[email]]
      *
      * @return User|null
      */
     public function getUser()
     {
         if ($this->_user === false) {
-            // Try to find by username first
-            $this->_user = User::findByUsername($this->username);
-
-            // If not found, try by email
-            if (!$this->_user) {
-                $this->_user = User::findByEmail($this->username);
-            }
+            $this->_user = User::findByEmail($this->email);
         }
 
         return $this->_user;

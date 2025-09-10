@@ -32,6 +32,20 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
     /**
      * {@inheritdoc}
      */
+    public function rules()
+    {
+        return [
+            [['name', 'email'], 'required'],
+            [['email'], 'email'],
+            [['email'], 'unique'],
+            [['name', 'email'], 'string', 'max' => 255],
+            [['password_hash', 'auth_key', 'access_token'], 'string'],
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public static function findIdentity($id)
     {
         return static::findOne($id);

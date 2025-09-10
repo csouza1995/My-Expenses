@@ -183,7 +183,7 @@ Content-Type: application/json
 {
     "description": "string",
     "category": 1,
-    "amount": 25.50,
+    "value": 25.50,
     "date": "2025-09-10"
 }
 ```
@@ -237,7 +237,7 @@ Content-Type: application/json
 {
     "description": "string",
     "category": 1,
-    "amount": 30.00,
+    "value": 30.00,
     "date": "2025-09-10"
 }
 ```
@@ -338,7 +338,7 @@ curl -X POST http://localhost:8080/api/auth/login \
 curl -X POST http://localhost:8080/api/expense \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_TOKEN_HERE" \
-  -d '{"description":"Lunch","category":1,"amount":25.50,"date":"2025-09-10"}'
+  -d '{"description":"Lunch","category":1,"value":25.50,"date":"2025-09-10"}'
 ```
 
 **List Expenses with Filters:**
@@ -395,7 +395,7 @@ Open the `api_test.html` file in your browser for a visual testing interface.
     "message": "Validation failed",
     "errors": {
         "description": ["Description cannot be blank."],
-        "amount": ["Amount must be greater than 0."]
+        "value": ["Value must be greater than 0."]
     }
 }
 ```

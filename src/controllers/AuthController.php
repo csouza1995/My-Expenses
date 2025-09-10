@@ -2,10 +2,9 @@
 
 namespace app\controllers;
 
-use app\models\Forms\LoginForm;
+use app\models\Forms\Web\LoginForm;
 use app\models\Forms\SignUpForm;
 use app\models\Entities\User;
-use app\models\Forms\Api\LoginForm as ApiLoginForm;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -51,7 +50,7 @@ class AuthController extends Controller
             return $this->goHome();
         }
 
-        $model = new ApiLoginForm();
+        $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
             return $this->goBack();
         }

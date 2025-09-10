@@ -39,6 +39,7 @@ class ExpenseController extends BaseApiController
         $params = Yii::$app->request->getQueryParams();
 
         // Override user_id to ensure user can only see their own expenses
+        $params['user_id'] = $this->currentUser->id;
         $dataProvider = $searchModel->search($params);
 
         $expenses = [];
@@ -54,7 +55,7 @@ class ExpenseController extends BaseApiController
                 'current_page' => ($pagination->offset / $pagination->limit) + 1,
                 'per_page' => $pagination->limit,
                 'total_count' => $dataProvider->getTotalCount(),
-                'total_pages' => ceil($dataProvider->getTotalCount() / $pagination->limit)
+                'total_pages' => max(1, ceil($dataProvider->getTotalCount() / $pagination->limit))
             ]
         ]);
     }
@@ -65,11 +66,15 @@ class ExpenseController extends BaseApiController
      */
     public function actionView($id)
     {
-        $expense = $this->findExpense($id);
+        try {
+            $expense = $this->findExpense($id);
 
-        return $this->successResponse([
-            'expense' => $this->formatExpenseOutput($expense)
-        ]);
+            return $this->successResponse([
+                'expense' => $this->formatExpenseOutput($expense)
+            ]);
+        } catch (\yii\web\NotFoundHttpException $e) {
+            return $this->errorResponse('Expense not found', null, 404);
+        }
     }
 
     /**
@@ -108,27 +113,31 @@ class ExpenseController extends BaseApiController
      */
     public function actionUpdate($id)
     {
-        $expense = $this->findExpense($id);
-        $data = Yii::$app->request->getBodyParams();
+        try {
+            $expense = $this->findExpense($id);
+            $data = Yii::$app->request->getBodyParams();
 
-        $form = new ExpenseForm();
+            $form = new ExpenseForm();
 
-        if (!$form->load($data, '') || !$form->validate()) {
-            return $this->errorResponse('Validation failed', $form->errors, 422);
+            if (!$form->load($data, '') || !$form->validate()) {
+                return $this->errorResponse('Validation failed', $form->errors, 422);
+            }
+
+            $expense->description = $form->description;
+            $expense->category = $form->category;
+            $expense->value = $form->value;
+            $expense->date = $form->date;
+
+            if (!$expense->save()) {
+                return $this->errorResponse('Failed to update expense', $expense->errors, 500);
+            }
+
+            return $this->successResponse([
+                'expense' => $this->formatExpenseOutput($expense)
+            ], 'Expense updated successfully');
+        } catch (\yii\web\NotFoundHttpException $e) {
+            return $this->errorResponse('Expense not found', null, 404);
         }
-
-        $expense->description = $form->description;
-        $expense->category = $form->category;
-        $expense->value = $form->value;
-        $expense->date = $form->date;
-
-        if (!$expense->save()) {
-            return $this->errorResponse('Failed to update expense', $expense->errors, 500);
-        }
-
-        return $this->successResponse([
-            'expense' => $this->formatExpenseOutput($expense)
-        ], 'Expense updated successfully');
     }
 
     /**
@@ -137,13 +146,17 @@ class ExpenseController extends BaseApiController
      */
     public function actionDelete($id)
     {
-        $expense = $this->findExpense($id);
+        try {
+            $expense = $this->findExpense($id);
 
-        if (!$expense->delete()) {
-            return $this->errorResponse('Failed to delete expense', null, 500);
+            if (!$expense->delete()) {
+                return $this->errorResponse('Failed to delete expense', null, 500);
+            }
+
+            return $this->successResponse(null, 'Expense deleted successfully');
+        } catch (\yii\web\NotFoundHttpException $e) {
+            return $this->errorResponse('Expense not found', null, 404);
         }
-
-        return $this->successResponse(null, 'Expense deleted successfully');
     }
 
     /**

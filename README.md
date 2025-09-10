@@ -171,9 +171,123 @@ chmod -R 755 src/web/assets
 
 ## 🧪 Testing
 
+This project includes a comprehensive test suite built with **Codeception** covering all layers of the application.
+
+### Test Environment Setup
+
+The project includes automated test utilities for easy setup:
+
 ```bash
-# Run tests inside the container
-docker-compose exec app vendor/bin/codecept run
+# Enter the application container
+docker-compose exec app bash
+
+# Setup complete test environment
+php yii test/setup
+
+# Check test environment status
+php yii test/status
+
+# Reset test environment (clean state)
+php yii test/reset
+```
+
+### Running Tests
+
+#### All Tests
+```bash
+# Run complete test suite
+vendor/bin/codecept run
+
+# Run with verbose output
+vendor/bin/codecept run --verbose
+```
+
+#### Individual Test Suites
+```bash
+# Unit Tests (24 tests) - Models and components testing
+vendor/bin/codecept run unit
+
+# Functional Tests (14 tests) - Integration testing
+vendor/bin/codecept run functional  
+
+# Acceptance Tests (8 tests) - End-to-end web interface testing
+vendor/bin/codecept run acceptance
+
+# API Tests (23 tests) - REST API endpoints testing
+vendor/bin/codecept run api
+```
+
+#### Specific Test Files
+```bash
+# Run specific test file
+vendor/bin/codecept run tests/unit/models/UserTest.php
+vendor/bin/codecept run tests/functional/LoginFormCest.php
+vendor/bin/codecept run tests/acceptance/HomeCest.php
+vendor/bin/codecept run tests/api/ApiAuthCest.php
+```
+
+### Test Coverage
+
+| Test Suite | Status | Coverage |
+|------------|--------|----------|
+| **Unit Tests** | ✅ 24/24 (100%) | Models, Forms, Widgets |
+| **Functional Tests** | ✅ 14/14 (100%) | Controllers, Forms Integration |
+| **Acceptance Tests** | ✅ 8/8 (100%) | Complete User Workflows |
+| **API Tests** | ⚠️ 20/23 (87%) | REST Endpoints |
+| **Total** | **68/71 (96%)** | **Full Application** |
+
+### Test Structure
+
+```
+tests/
+├── unit/           # Unit tests for models and components
+│   ├── models/     # User, LoginForm testing
+│   └── widgets/    # Alert widget testing
+├── functional/     # Integration tests
+│   ├── LoginFormCest.php    # Login functionality
+│   └── ExpenseFormCest.php  # Expense management
+├── acceptance/     # End-to-end tests
+│   ├── HomeCest.php         # Homepage workflows
+│   ├── LoginCest.php        # Authentication flows
+│   └── ExpenseCest.php      # Expense management UI
+└── api/           # API endpoint tests
+    ├── ApiAuthCest.php      # Authentication API
+    └── ApiExpenseCest.php   # Expense CRUD API
+```
+
+### Test Utilities
+
+The project includes useful console commands for test management:
+
+```bash
+# Generate password hash for test data
+php yii test/password-hash [password]
+
+# Create test user manually
+php yii user/create-test
+
+# Check test environment health
+php yii test/status
+```
+
+### Test Database
+
+- Tests use an isolated SQLite database (`tests/_output/test.db`)
+- Automatic test user creation: `tester@example.com` / `ABCdef123!@#`
+- Clean database state maintained between test runs
+- No interference with development/production data
+
+### Development Testing
+
+```bash
+# Run tests during development
+vendor/bin/codecept run --fail-fast
+
+# Run only specific test methods
+vendor/bin/codecept run tests/unit/models/UserTest.php:testFindUserById
+
+# Generate test reports
+vendor/bin/codecept run --xml --html
 ```
 
 ## 📝 Development

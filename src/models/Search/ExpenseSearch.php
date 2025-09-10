@@ -16,12 +16,13 @@ class ExpenseSearch extends Model
     public $date;
     public $date_from;
     public $date_to;
+    public $user_id;
 
     public function rules()
     {
         return [
             [['description'], 'string', 'max' => 255],
-            [['category'], 'integer'],
+            [['category', 'user_id'], 'integer'],
             [['categories'], 'each', 'rule' => ['integer', 'min' => 1]], // Validate each category ID
             [['value'], 'number', 'min' => 0],
             [['date', 'date_from', 'date_to'], 'date', 'format' => 'php:Y-m-d'],
@@ -30,12 +31,18 @@ class ExpenseSearch extends Model
 
     public function search($params)
     {
-        $query = Expense::find()->where(['user_id' => Yii::$app->user->id]);
+        // Use user_id from params or fallback to current user
+        $userId = isset($params['user_id']) ? $params['user_id'] : Yii::$app->user->id;
+        $query = Expense::find()->where(['user_id' => $userId]);
+
+        // Handle pagination parameters
+        $pageSize = isset($params['per_page']) ? (int)$params['per_page'] : 10;
+        $pageSize = max(1, min($pageSize, 100)); // Limit between 1 and 100
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
-                'pageSize' => 10,
+                'pageSize' => $pageSize,
             ],
             'sort' => [
                 'defaultOrder' => [
@@ -54,6 +61,11 @@ class ExpenseSearch extends Model
         // Apply filtering conditions
         $query->andFilterWhere(['like', 'description', $this->description])
             ->andFilterWhere(['value' => $this->value]);
+
+        // Filter by single category
+        if (!empty($this->category)) {
+            $query->andFilterWhere(['category' => $this->category]);
+        }
 
         // Filter by multiple categories
         if (!empty($this->categories) && is_array($this->categories)) {

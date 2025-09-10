@@ -59,4 +59,42 @@ class UserController extends Controller
             echo "{$user->id}\t{$user->name}\t{$user->email}\n";
         }
     }
+
+    /**
+     * Creates the default test user for testing
+     * Usage: php yii user/create-test
+     */
+    public function actionCreateTest()
+    {
+        $email = 'tester@example.com';
+        $password = 'ABCdef123!@#';
+
+        // Check if user already exists
+        $existingUser = User::findByEmail($email);
+        if ($existingUser) {
+            echo "Test user '$email' already exists!\n";
+            echo "Password: $password\n";
+            return;
+        }
+
+        $user = new User();
+        $user->name = 'Test User';
+        $user->email = $email;
+        $user->setPassword($password);
+        $user->generateAuthKey();
+        $user->generateAccessToken();
+
+        if ($user->save()) {
+            echo "✅ Test user created successfully!\n";
+            echo "📧 Email: {$user->email}\n";
+            echo "🔑 Password: $password\n";
+            echo "🎯 You can now run the API and Acceptance tests.\n";
+        } else {
+            echo "❌ Failed to create test user!\n";
+            echo "Errors:\n";
+            foreach ($user->errors as $field => $errors) {
+                echo "  $field: " . implode(', ', $errors) . "\n";
+            }
+        }
+    }
 }

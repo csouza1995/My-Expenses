@@ -15,6 +15,9 @@ return [
     'language' => 'en-US',
     'components' => [
         'db' => $db,
+        'cache' => [
+            'class' => 'yii\caching\DummyCache',
+        ],
         'mailer' => [
             'class' => \yii\symfonymailer\Mailer::class,
             'viewPath' => '@app/mail',
@@ -25,21 +28,41 @@ return [
         'assetManager' => [
             'basePath' => __DIR__ . '/../web/assets',
         ],
-        'urlManager' => [
-            'showScriptName' => true,
-        ],
         'user' => [
-            'identityClass' => 'app\models\User',
+            'class' => 'yii\web\User',
+            'identityClass' => 'app\models\Entities\User',
         ],
         'request' => [
             'cookieValidationKey' => 'test',
             'enableCsrfValidation' => false,
+            'parsers' => [
+                'application/json' => 'yii\web\JsonParser',
+            ],
             // but if you absolutely need it set cookie domain to localhost
             /*
             'csrfCookie' => [
                 'domain' => 'localhost',
             ],
             */
+        ],
+        'urlManager' => [
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
+            'rules' => [
+                // API Routes
+                'POST api/auth/login' => 'api/auth/login',
+                'GET api/auth/verify' => 'api/auth/verify',
+                'POST api/auth/refresh' => 'api/auth/refresh',
+
+                'GET api/expense' => 'api/expense/index',
+                'POST api/expense' => 'api/expense/create',
+                'GET api/expense/<id:\d+>' => 'api/expense/view',
+                'PUT api/expense/<id:\d+>' => 'api/expense/update',
+                'DELETE api/expense/<id:\d+>' => 'api/expense/delete',
+
+                // Default routes
+                '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
+            ],
         ],
     ],
     'params' => $params,
