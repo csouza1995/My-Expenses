@@ -86,7 +86,7 @@ echo $this->render('_styles');
                                 'class' => 'btn btn-sm btn-outline-info btn-action me-1',
                                 'title' => 'Ver Mais',
                                 'data-bs-toggle' => 'tooltip',
-                                'onclick' => "viewExpense('{$model->id}', '" . addslashes($model->description) . "', '{$model->getCategoryName()}', '{$model->value}', '{$model->getDateFormatted()}', '{$model->getCreatedAtFormatted()}', '{$model->getUpdatedAtFormatted()}')"
+                                'onclick' => "viewExpense(" . (int)$model->id . ", '" . Html::encode(addslashes($model->description)) . "', '" . Html::encode($model->getCategoryName()) . "', '" . Html::encode($model->value) . "', '" . Html::encode($model->getDateFormatted()) . "', '" . Html::encode($model->getCreatedAtFormatted()) . "', '" . Html::encode($model->getUpdatedAtFormatted()) . "')"
                             ]
                         );
                     },
@@ -97,7 +97,7 @@ echo $this->render('_styles');
                                 'class' => 'btn btn-sm btn-outline-primary btn-action me-1',
                                 'title' => 'Editar Despesa',
                                 'data-bs-toggle' => 'tooltip',
-                                'onclick' => "editExpense('{$model->id}', '" . addslashes($model->description) . "', '{$model->category}', '{$model->value}', '{$model->date}')"
+                                'onclick' => "editExpense(" . (int)$model->id . ", '" . Html::encode(addslashes($model->description)) . "', " . (int)$model->category . ", '" . Html::encode($model->value) . "', '" . Html::encode($model->date) . "')"
                             ]
                         );
                     },
@@ -108,7 +108,7 @@ echo $this->render('_styles');
                                 'class' => 'btn btn-sm btn-outline-danger btn-action',
                                 'title' => 'Excluir Despesa',
                                 'data-bs-toggle' => 'tooltip',
-                                'onclick' => "confirmDelete('{$model->id}', '" . addslashes($model->description) . "')"
+                                'onclick' => "confirmDelete(" . (int)$model->id . ", '" . Html::encode(addslashes($model->description)) . "')"
                             ]
                         );
                     },

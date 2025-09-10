@@ -35,6 +35,8 @@ class ExpenseController extends Controller
                 'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
+                    'create' => ['POST'],
+                    'update' => ['POST'],
                 ],
             ],
         ];
@@ -109,7 +111,13 @@ class ExpenseController extends Controller
             $id = Yii::$app->request->get('id');
         }
 
-        $expense = Expense::findOne(['id' => $id, 'user_id' => Yii::$app->user->id]);
+        // Validate ID parameter
+        if (!is_numeric($id) || (int)$id != $id || (int)$id <= 0) {
+            Yii::$app->session->setFlash('error', 'ID de despesa inválido.');
+            return $this->redirect(['expense/index']);
+        }
+
+        $expense = Expense::findOne(['id' => (int)$id, 'user_id' => Yii::$app->user->id]);
 
         if ($expense === null) {
             Yii::$app->session->setFlash('error', 'Despesa não encontrada.');
@@ -149,7 +157,13 @@ class ExpenseController extends Controller
      */
     public function actionDelete($id)
     {
-        $expense = Expense::findOne(['id' => $id, 'user_id' => Yii::$app->user->id]);
+        // Validate ID parameter
+        if (!is_numeric($id) || (int)$id != $id || (int)$id <= 0) {
+            Yii::$app->session->setFlash('error', 'ID de despesa inválido.');
+            return $this->redirect(['expense/index']);
+        }
+
+        $expense = Expense::findOne(['id' => (int)$id, 'user_id' => Yii::$app->user->id]);
 
         if ($expense === null) {
             Yii::$app->session->setFlash('error', 'Despesa não encontrada.');

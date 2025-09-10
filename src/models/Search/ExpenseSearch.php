@@ -20,9 +20,10 @@ class ExpenseSearch extends Model
     public function rules()
     {
         return [
-            [['description', 'category'], 'safe'],
-            [['categories'], 'safe'], // Array of categories
-            [['value'], 'number'],
+            [['description'], 'string', 'max' => 255],
+            [['category'], 'integer'],
+            [['categories'], 'each', 'rule' => ['integer', 'min' => 1]], // Validate each category ID
+            [['value'], 'number', 'min' => 0],
             [['date', 'date_from', 'date_to'], 'date', 'format' => 'php:Y-m-d'],
         ];
     }
@@ -56,7 +57,13 @@ class ExpenseSearch extends Model
 
         // Filter by multiple categories
         if (!empty($this->categories) && is_array($this->categories)) {
-            $query->andWhere(['IN', 'category', $this->categories]);
+            // Validate each category is a valid integer
+            $validCategories = array_filter($this->categories, function ($cat) {
+                return is_numeric($cat) && (int)$cat > 0;
+            });
+            if (!empty($validCategories)) {
+                $query->andWhere(['IN', 'category', array_map('intval', $validCategories)]);
+            }
         }
 
         // Filter by period

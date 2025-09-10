@@ -62,8 +62,14 @@ $(document).ready(function() {
 
 // Edit expense function
 window.editExpense = function(id, description, category, value, date) {
+    // Validate and sanitize inputs
+    if (!id || !Number.isInteger(Number(id)) || Number(id) <= 0) {
+        alert('ID de despesa inválido.');
+        return;
+    }
+    
     $('#expense-modal .modal-title').html('<i class="fas fa-edit"></i> Editar Despesa');
-    $('#expense-form').attr('action', window.expenseUpdateUrl + '?id=' + id);
+    $('#expense-form').attr('action', window.expenseUpdateUrl + '?id=' + encodeURIComponent(id));
     $('#expense-id').val(id);
     $('#expenseform-description').val(description);
     $('#expenseform-category').val(category);
@@ -87,16 +93,29 @@ window.viewExpense = function(id, description, category, value, date, created_at
 
 // Confirm delete function
 window.confirmDelete = function(id, description) {
-    $('#delete-description').text(description);
-    $('#confirm-delete-btn').attr('onclick', 'deleteExpense(' + id + ')');
+    // Validate ID
+    if (!id || !Number.isInteger(Number(id)) || Number(id) <= 0) {
+        alert('ID de despesa inválido.');
+        return;
+    }
+    
+    // Sanitize description for display
+    $('#delete-description').text(description || 'Despesa sem descrição');
+    $('#confirm-delete-btn').attr('onclick', 'deleteExpense(' + encodeURIComponent(id) + ')');
     $('#delete-modal').modal('show');
 }
 
 // Delete expense function
 window.deleteExpense = function(id) {
+    // Validate ID before making request
+    if (!id || !Number.isInteger(Number(id)) || Number(id) <= 0) {
+        alert('ID de despesa inválido.');
+        return;
+    }
+    
     var form = $('<form>', {
         'method': 'POST',
-        'action': window.expenseDeleteUrl + '?id=' + id
+        'action': window.expenseDeleteUrl + '?id=' + encodeURIComponent(id)
     });
     form.append($('<input>', {
         'type': 'hidden',
