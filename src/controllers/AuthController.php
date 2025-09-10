@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\models\Forms\LoginForm;
 use app\models\Forms\SignUpForm;
 use app\models\Entities\User;
+use app\models\Forms\Api\LoginForm as ApiLoginForm;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -50,45 +51,13 @@ class AuthController extends Controller
             return $this->goHome();
         }
 
-        $model = new LoginForm();
+        $model = new ApiLoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
             return $this->goBack();
         }
 
         $model->password = '';
         return $this->render('login', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
-     * Signup action.
-     */
-    public function actionSignup()
-    {
-        // If already logged in, redirect to home
-        if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
-        }
-
-        $model = new SignUpForm();
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            // Sign up the user
-            $user = new User();
-            $user->name = $model->name;
-            $user->email = $model->email;
-            $user->setPassword($model->password);
-            $user->generateAuthKey();
-            $user->generateAccessToken();
-
-            if ($user->save()) {
-                return $this->goBack('/expense');
-            }
-        }
-
-        $model->password = '';
-
-        return $this->render('signup', [
             'model' => $model,
         ]);
     }
