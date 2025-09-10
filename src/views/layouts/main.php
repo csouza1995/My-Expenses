@@ -39,29 +39,28 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
             'options' => ['class' => 'navbar-expand-md navbar-dark bg-dark fixed-top']
         ]);
 
-        $navItems = [
-            ['label' => 'Dashboard', 'url' => ['/site/index']],
-            ['label' => 'Sobre', 'url' => ['/site/about']],
-        ];
+        $navItems = [];
 
         if (Yii::$app->user->isGuest) {
-            $navItems[] = ['label' => 'Inscrever-se', 'url' => ['/site/signup'], 'options' => ['class' => 'ml-auto']];
-            $navItems[] = ['label' => 'Entrar', 'url' => ['/site/login'], 'options' => ['class' => 'pull-right']];
+            // auth links
+            $navItems[] = ['label' => 'Inscrever-se', 'url' => ['/auth/signup'], 'options' => ['class' => 'ml-auto']];
+            $navItems[] = ['label' => 'Entrar', 'url' => ['/auth/login'], 'options' => ['class' => 'pull-right']];
         } else {
-            $navItems[] = '<li class="nav-item pull-right">'
-                . Html::beginForm(['/site/logout'])
-                . Html::submitButton(
-                    'Sair (' . Yii::$app->user->identity->name . ')',
-                    ['class' => 'nav-link btn btn-link logout']
-                )
-                . Html::endForm()
-                . '</li>';
+            // expenses link
+            $navItems[] = ['label' => 'Despesas', 'url' => ['/expense']];
+
+            // auth profile dropdown
+            $navItems[] = ['label' => 'Perfil (' . Yii::$app->user->identity->name . ')', 'items' => [
+                ['label' => 'Meu Perfil', 'url' => ['/profile']],
+                '<a class="dropdown-item" href="/auth/logout" data-method="post">Sair</a>',
+            ]];
         }
 
         echo Nav::widget([
             'options' => ['class' => 'navbar-nav ms-auto'],
             'items' => $navItems,
         ]);
+
         NavBar::end();
         ?>
     </header>
@@ -69,7 +68,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
     <main id="main" class="flex-shrink-0" role="main">
         <div class="container">
             <?php if (!empty($this->params['breadcrumbs'])): ?>
-                <?= Breadcrumbs::widget(['links' => $this->params['breadcrumbs'], 'homeLink' => ['label' => 'Dashboard', 'url' => Yii::$app->homeUrl]]); ?>
+                <?= Breadcrumbs::widget(['links' => $this->params['breadcrumbs']]); ?>
             <?php endif ?>
             <?= Alert::widget() ?>
             <?= $content ?>
@@ -79,7 +78,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
     <footer id="footer" class="mt-auto py-3 bg-light">
         <div class="container">
             <div class="row text-muted">
-                <div class="col-md-6 text-center text-md-start">&copy; My Company <?= date('Y') ?></div>
+                <div class="col-md-6 text-center text-md-start">&copy; CSDev <?= date('Y') ?></div>
                 <div class="col-md-6 text-center text-md-end"><?= Yii::powered() ?></div>
             </div>
         </div>

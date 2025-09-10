@@ -8,14 +8,14 @@
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
 
-$this->title = 'Inscrever-se';
+$this->title = 'Entrar';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="site-login">
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        Por favor, preencha os seguintes campos para se inscrever:
+        Por favor, preencha os campos para entrar:
     </p>
 
     <div class="row">
@@ -31,15 +31,18 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
             ]); ?>
 
-            <?= $form->field($model, 'name')->textInput(['autofocus' => true]) ?>
+            <?= $form->field($model, 'email')->textInput(['autofocus' => true, 'type' => 'email'])->label('Email') ?>
 
-            <?= $form->field($model, 'email')->textInput(['type' => 'email']) ?>
+            <?= $form->field($model, 'password')->passwordInput()->label('Senha') ?>
 
-            <?= $form->field($model, 'password')->passwordInput() ?>
+            <?= $form->field($model, 'rememberMe')->checkbox([
+                'label' => 'Manter-me conectado',
+                'template' => "<div class=\"custom-control custom-checkbox\">{input} {label}</div>\n<div class=\"col-lg-8\">{error}</div>",
+            ]) ?>
 
             <div class="form-group">
                 <div>
-                    <?= Html::submitButton('Inscrever-se', ['class' => 'btn btn-primary', 'name' => 'signup-button']) ?>
+                    <?= Html::submitButton('Entrar', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
                 </div>
             </div>
 

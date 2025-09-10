@@ -3,7 +3,6 @@
 namespace app\models\Forms;
 
 use app\models\User;
-use Yii;
 use yii\base\Model;
 
 /**
@@ -18,16 +17,13 @@ class SignUpForm extends Model
     public $email;
     public $password;
 
-    private $_user = false;
-
-
     /**
      * @return array the validation rules.
      */
     public function rules()
     {
         return [
-            // email and password are both required
+            // email, name and password are required
             [['name', 'email', 'password'], 'required', 'message' => 'O campo {attribute} é obrigatório.'],
             // email has to be a valid email address
             ['email', 'email', 'message' => 'Por favor, insira um endereço de e-mail válido.'],
