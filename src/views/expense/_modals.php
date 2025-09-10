@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Modais da aplicação - Adicionar/Editar, Visualizar e Excluir
+ * Application Modals - Add/Edit, View and Delete
  * 
  * @var app\models\Forms\ExpenseForm $model
  * @var array $categories

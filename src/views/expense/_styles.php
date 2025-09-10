@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Estilos CSS customizados para a view de despesas
+ * Custom CSS styles for expenses view
  */
 
 $this->registerCss("

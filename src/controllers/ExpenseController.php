@@ -47,11 +47,11 @@ class ExpenseController extends Controller
      */
     public function actionIndex()
     {
-        // data index
+        // Search model and data provider
         $searchModel = new ExpenseSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        // form
+        // Form model
         $model = new ExpenseForm();
 
         return $this->render('index', [

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Componente de Filtros - Categorias e Período
+ * Filter Component - Categories and Period
  * 
  * @var array $categories
  */
@@ -9,28 +9,28 @@
 use yii\helpers\Html;
 ?>
 
-<!-- Filtros -->
+<!-- Filters -->
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <!-- Filtro de Categorias -->
+    <!-- Category Filter -->
     <div class="btn-group category-filter-container" role="group">
         <?php foreach ($categories as $id => $name): ?>
             <button type="button"
                 class="btn category-btn-compact"
                 id="category-<?= $id ?>"
                 onclick="toggleCategory('<?= $id ?>', event)"
-                title="Single click: adicionar/remover | Double click: filtrar apenas esta">
+                title="Single click: add/remove | Double click: filter only this category">
                 <?= Html::encode($name) ?>
             </button>
         <?php endforeach; ?>
         <button type="button"
             class="btn btn-reset-categories"
             onclick="resetCategoryFilter()"
-            title="Limpar filtros de categoria">
+            title="Clear category filters">
             <i class="fas fa-times"></i> Reset
         </button>
     </div>
 
-    <!-- Filtro de Período -->
+    <!-- Period Filter -->
     <div class="btn-group period-filter-container" role="group">
         <!-- Informativo de data personalizada -->
         <div class="custom-date-info">

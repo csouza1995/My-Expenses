@@ -16,12 +16,12 @@ $this->title = 'Minhas Despesas';
 // FontAwesome CSS
 $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
 
-// Registrar arquivo JavaScript separado
+// Register separate JavaScript file
 $this->registerJsFile('@web/js/expense-filters.js', ['depends' => [\yii\web\JqueryAsset::class]]);
 
-// Passar URLs e tokens para o JavaScript
+// Pass URLs and tokens to JavaScript
 $this->registerJs("
-    // URLs para as funções JavaScript
+    // URLs for JavaScript functions
     window.expenseCreateUrl = '" . Url::to(['expense/create']) . "';
     window.expenseUpdateUrl = '" . Url::to(['expense/update']) . "';
     window.expenseDeleteUrl = '" . Url::to(['expense/delete']) . "';
@@ -29,7 +29,7 @@ $this->registerJs("
     window.csrfToken = '" . Yii::$app->request->csrfToken . "';
 ");
 
-// Incluir estilos customizados
+// Include custom styles
 echo $this->render('_styles');
 ?>
 
@@ -44,10 +44,10 @@ echo $this->render('_styles');
         </div>
     </div>
 
-    <!-- Filtros -->
+    <!-- Filters -->
     <?= $this->render('_filters', ['categories' => $categories]) ?>
 
-    <!-- Grid de Despesas -->
+    <!-- Expenses Grid -->
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'columns' => [
@@ -55,14 +55,28 @@ echo $this->render('_styles');
             ['attribute' => 'category', 'label' => 'Categoria', 'value' => function ($model) {
                 return $model->getCategoryName();
             }],
-            ['attribute' => 'value', 'label' => 'Valor', 'format' => ['currency', 'BRL']],
-            ['attribute' => 'date', 'label' => 'Data', 'format' => ['date', 'php:d/m/Y']],
+            [
+                'attribute' => 'value',
+                'label' => 'Valor',
+                'value' => function ($model) {
+                    return 'R$ ' . number_format($model->value, 2, ',', '.');
+                },
+                'headerOptions' => ['class' => 'text-center', 'style' => 'width: 120px;'],
+                'contentOptions' => ['class' => 'text-center align-middle']
+            ],
+            [
+                'attribute' => 'date',
+                'label' => 'Data',
+                'format' => ['date', 'php:d/m/Y'],
+                'headerOptions' => ['class' => 'text-center', 'style' => 'width: 100px;'],
+                'contentOptions' => ['class' => 'text-center align-middle']
+            ],
             // Actions
             [
                 'class' => 'yii\grid\ActionColumn',
                 'template' => '{view} {update} {delete}',
                 'header' => 'Ações',
-                'options' => ['style' => 'width: 180px;', 'class' => 'text-center'],
+                'headerOptions' => ['class' => 'text-center', 'style' => 'width: 140px;'],
                 'contentOptions' => ['class' => 'text-center align-middle'],
                 'buttons' => [
                     'view' => function ($url, $model, $key) {
@@ -106,9 +120,11 @@ echo $this->render('_styles');
             'pagination' => $dataProvider->pagination,
         ],
         'layout' => "{items}\n<div class=\"d-flex justify-content-between\">{summary}{pager}</div>",
+        'summaryOptions' => ['class' => 'summary text-muted'],
+        'summary' => 'Exibindo {begin}-{end} de {totalCount} itens',
     ]) ?>
 
-    <!-- Modais -->
+    <!-- Modals -->
     <?= $this->render('_modals', [
         'model' => $model,
         'categories' => $categories

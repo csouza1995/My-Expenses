@@ -11,7 +11,7 @@ class ExpenseSearch extends Model
 {
     public $description;
     public $category;
-    public $categories; // Array para múltiplas categorias
+    public $categories; // Array for multiple categories
     public $value;
     public $date;
     public $date_from;
@@ -21,7 +21,7 @@ class ExpenseSearch extends Model
     {
         return [
             [['description', 'category'], 'safe'],
-            [['categories'], 'safe'], // Array de categorias
+            [['categories'], 'safe'], // Array of categories
             [['value'], 'number'],
             [['date', 'date_from', 'date_to'], 'date', 'format' => 'php:Y-m-d'],
         ];
@@ -38,7 +38,7 @@ class ExpenseSearch extends Model
             ],
             'sort' => [
                 'defaultOrder' => [
-                    'created_at' => SORT_DESC,
+                    'date' => SORT_DESC,
                 ],
             ],
         ]);
@@ -54,12 +54,12 @@ class ExpenseSearch extends Model
         $query->andFilterWhere(['like', 'description', $this->description])
             ->andFilterWhere(['value' => $this->value]);
 
-        // Filtro por múltiplas categorias
+        // Filter by multiple categories
         if (!empty($this->categories) && is_array($this->categories)) {
             $query->andWhere(['IN', 'category', $this->categories]);
         }
 
-        // Filtro por período
+        // Filter by period
         if ($this->date_from) {
             $query->andWhere(['>=', 'date', $this->date_from]);
         }
@@ -67,7 +67,7 @@ class ExpenseSearch extends Model
             $query->andWhere(['<=', 'date', $this->date_to]);
         }
 
-        // Filtro por data específica (caso não use período)
+        // Filter by specific date (if not using period)
         if ($this->date && !$this->date_from && !$this->date_to) {
             $query->andFilterWhere(['date' => $this->date]);
         }

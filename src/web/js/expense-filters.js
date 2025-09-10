@@ -1,10 +1,10 @@
 /**
- * Scripts JavaScript para funcionalidades de despesas
- * Filtros, modais e interações da interface
+ * JavaScript scripts for expense functionalities
+ * Filters, modals and interface interactions
  */
 
 $(document).ready(function() {
-    // Inicializar tooltips do Bootstrap
+    // Initialize Bootstrap tooltips
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl);
@@ -44,19 +44,19 @@ $(document).ready(function() {
         $('.alert').fadeOut('slow');
     }, 5000);
 
-    // Detectar mudanças nos inputs de data customizados
+    // Detect changes in custom date inputs
     $(document).on('change', '#filter-date-from, #filter-date-to', function() {
         updateCustomDateInfo();
     });
 
-    // Fechar dropdown quando clicar fora
+    // Close dropdown when clicking outside
     $(document).on('click', function(event) {
         if (!$(event.target).closest('.custom-date-dropdown').length) {
             $('#custom-date-dropdown').removeClass('show').addClass('hide');
         }
     });
 
-    // Inicializar filtros
+    // Initialize filters
     initializeFilters();
 });
 
@@ -112,21 +112,21 @@ setTimeout(function() {
     $('.alert').fadeOut('slow');
 }, 5000);
 
-// ===== FILTROS =====
+// ===== FILTERS =====
 
-// Filtro de categorias
+// Category filter
 var selectedCategories = [];
 var clickTimeout = null;
 
-// Aplicar filtro de categorias
+// Apply category filter
 window.applyCategoryFilter = function() {
     var params = new URLSearchParams(window.location.search);
     
-    // Remover parâmetros anteriores de categoria
+    // Remove previous category parameters
     params.delete('ExpenseSearch[categories]');
     params.delete('ExpenseSearch[categories][]');
     
-    // Remover todos os parâmetros de categoria existentes
+    // Remove all existing category parameters
     var keysToDelete = [];
     for (var key of params.keys()) {
         if (key.startsWith('ExpenseSearch[categories]')) {
@@ -135,18 +135,18 @@ window.applyCategoryFilter = function() {
     }
     keysToDelete.forEach(key => params.delete(key));
     
-    // Adicionar categorias selecionadas como array
+    // Add selected categories as array
     if (selectedCategories.length > 0) {
         selectedCategories.forEach(function(categoryId) {
             params.append('ExpenseSearch[categories][]', categoryId);
         });
     }
     
-    // Recarregar página com filtros
+    // Reload page with filters
     window.location.search = params.toString();
 }
 
-// Toggle categoria no filtro
+// Toggle category in filter
 window.toggleCategory = function(categoryId, event) {
     // Prevenir propagação do evento
     event.preventDefault();
@@ -212,22 +212,22 @@ window.initializeCategoryFilter = function() {
     });
 }
 
-// ===== FILTRO DE PERÍODO =====
+// ===== PERIOD FILTER =====
 
-// Filtro de período
+// Period filter
 window.filterByPeriod = function(period) {
     var dateFrom, dateTo;
     
     // Remove active class from all period buttons
     $('.period-btn-compact').removeClass('active');
     
-    // Sair do modo personalizado se estiver ativo
+    // Exit custom mode if active
     if ($('.period-filter-container').hasClass('custom-mode')) {
         $('.period-filter-container').removeClass('custom-mode');
         $('.custom-date-info').removeClass('show');
     }
     
-    // Função para formatar data como YYYY-MM-DD
+    // Function to format date as YYYY-MM-DD
     function formatDate(date) {
         var year = date.getFullYear();
         var month = String(date.getMonth() + 1).padStart(2, '0');
@@ -295,7 +295,7 @@ window.filterByPeriod = function(period) {
     applyPeriodFilter();
 }
 
-// Aplicar filtro de período
+// Apply period filter
 window.applyPeriodFilter = function() {
     var params = new URLSearchParams(window.location.search);
     
@@ -325,7 +325,7 @@ window.toggleCustomDateDropdown = function() {
     }
 }
 
-// Entrar no modo personalizado
+// Enter custom mode
 window.enterCustomMode = function() {
     $('.period-filter-container').addClass('custom-mode');
     $('.custom-date-info').addClass('show');
@@ -333,7 +333,7 @@ window.enterCustomMode = function() {
     updateCustomDateInfo();
 }
 
-// Sair do modo personalizado
+// Exit custom mode
 window.exitCustomMode = function() {
     $('.period-filter-container').removeClass('custom-mode');
     $('.custom-date-info').removeClass('show');
@@ -348,7 +348,7 @@ window.updateCustomDateInfo = function() {
     var dateTo = $('#filter-date-to').val();
     var infoText = '';
     
-    // Função para formatar data string YYYY-MM-DD para DD/MM/YYYY
+    // Function to format date string YYYY-MM-DD to DD/MM/YYYY
     function formatDateDisplay(dateString) {
         if (!dateString) return '';
         var parts = dateString.split('-');
@@ -387,9 +387,9 @@ window.clearCustomDates = function() {
     $('#custom-date-dropdown').removeClass('show').addClass('hide');
 }
 
-// ===== INICIALIZAÇÃO =====
+// ===== INITIALIZATION =====
 
-// Função para inicializar filtros baseado na URL
+// Function to initialize filters based on URL
 function initializeFilters() {
     var urlParams = new URLSearchParams(window.location.search);
     var dateFrom = urlParams.get('ExpenseSearch[date_from]');
@@ -398,14 +398,14 @@ function initializeFilters() {
     if (dateFrom) $('#filter-date-from').val(dateFrom);
     if (dateTo) $('#filter-date-to').val(dateTo);
     
-    // Se há datas mas nenhum botão ativo, entrar no modo personalizado
+    // If there are dates but no active button, enter custom mode
     if ((dateFrom || dateTo) && !$('.period-btn-compact.active').length) {
         enterCustomMode();
     }
     
-    // Inicializar dropdown como fechado
+    // Initialize dropdown as closed
     $('#custom-date-dropdown').addClass('hide');
     
-    // Inicializar filtro de categorias
+    // Initialize category filter
     initializeCategoryFilter();
 }
