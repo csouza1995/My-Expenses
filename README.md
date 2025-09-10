@@ -54,8 +54,11 @@ I configured MySQL to run automatically. If you need to access it:
 - **Database**: main
 
 ```bash
-# Run migrations if needed
-docker-compose exec app php yii migrate
+# Run migrations if needed - remove parameter --interactive when wants to confirm migration!
+docker-compose exec app php yii migrate --interactive=0
+
+# Setup test data for acceptance tests (web interface)
+docker-compose exec app php tests/_data/setup_mysql_test_data.php
 ```
 
 ## 🔧 Useful daily commands
@@ -124,6 +127,9 @@ The system automatically creates:
 ```bash
 # If you need to reset the test environment
 php tests/_data/reset_test_db.php
+
+# If acceptance tests fail, setup MySQL test data
+docker-compose exec app php tests/_data/setup_mysql_test_data.php
 ```
 
 ## 🚨 Common troubleshooting
@@ -137,6 +143,18 @@ docker-compose logs
 # Rebuild everything from scratch
 docker-compose down
 docker-compose up -d --build
+```
+
+### Acceptance tests failing
+
+If acceptance tests fail (ExpenseCest, LoginCest), it's usually because the test user doesn't exist in MySQL database. Run:
+
+```bash
+# Setup test data in MySQL for acceptance tests
+docker-compose exec app php tests/_data/setup_mysql_test_data.php
+
+# Then run acceptance tests again
+docker-compose exec app vendor/bin/codecept run acceptance
 ```
 
 ### Permission issues

@@ -2,9 +2,9 @@ FROM php:8.2-fpm
 
 # install system dependencies
 RUN apt-get update && apt-get install -y \
-    imagemagick libmagickwand-dev git unzip libpng-dev libjpeg-dev libfreetype6-dev libonig-dev libxml2-dev \
+    imagemagick libmagickwand-dev git unzip libpng-dev libjpeg-dev libfreetype6-dev libonig-dev libxml2-dev libzip-dev \
     && pecl install imagick \
-    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 
 # composer
 COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
